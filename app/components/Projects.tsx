@@ -1,11 +1,39 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
 export default function Projects() {
 
   const projects = [
     {
       title: 'Poran Global',
-      desc: 'Multi Vendor eCommerce Flutter Application with modern UI, secure payment system, REST API integration, Firebase support, and scalable architecture.',
+
+      subtitle:
+        'Multi Vendor eCommerce Flutter Application',
+
+      description:
+        'Poran Global is a modern multi-vendor eCommerce platform built with Flutter. The app provides seamless shopping experience with real-time product management, Firebase integration, secure authentication, scalable architecture, and responsive UI for Android & iOS users.',
+
+      features: [
+        'Multi Vendor System',
+        'Firebase Authentication',
+        'REST API Integration',
+        'Real-time Order Management',
+        'Clean Architecture',
+        'Responsive UI Design',
+        'Secure Payment System',
+      ],
+
+      technologies: [
+        'Flutter',
+        'Firebase',
+        'REST API',
+        'GetX',
+        'Provider',
+      ],
+
+      playstore:
+        'https://play.google.com/store/apps/details?id=com.poranglobalapp.app',
 
       images: [
         'https://res.cloudinary.com/dfa4buz7j/image/upload/v1778454022/WhatsApp_Image_2026-05-11_at_4.58.47_AM_gdbvws.jpg',
@@ -18,17 +46,6 @@ export default function Projects() {
 
         'https://res.cloudinary.com/dfa4buz7j/image/upload/v1778454014/WhatsApp_Image_2026-05-11_at_4.58.49_AM_gsd8qf.jpg',
       ],
-
-      link:
-        'https://play.google.com/store/apps/details?id=com.poranglobalapp.app',
-
-      tech: [
-        'Flutter',
-        'Firebase',
-        'REST API',
-        'GetX',
-        'Provider'
-      ],
     },
   ]
 
@@ -40,84 +57,17 @@ export default function Projects() {
 
       <div className="max-w-7xl mx-auto">
 
-        <h2 className="text-5xl font-extrabold text-center mb-16 text-yellow-400">
+        <h2 className="text-5xl font-extrabold text-center text-yellow-400 mb-20">
           Featured Projects
         </h2>
 
-        <div className="space-y-20">
+        <div className="space-y-32">
 
           {projects.map((project, index) => (
-
-            <div
+            <ProjectCard
               key={index}
-              className="bg-[#111111] rounded-[40px] border border-gray-800
-              overflow-hidden hover:border-yellow-400
-              transition duration-500 hover:shadow-2xl
-              hover:shadow-yellow-400/20"
-            >
-
-              {/* IMAGE SCROLL */}
-              <div className="flex gap-5 overflow-x-auto p-6 scrollbar-hide">
-
-                {project.images.map((image, i) => (
-
-                  <img
-                    key={i}
-                    src={image}
-                    alt={project.title}
-                    className="h-[500px] rounded-3xl border border-gray-700
-                    hover:scale-[1.03] transition duration-300"
-                  />
-
-                ))}
-
-              </div>
-
-              {/* CONTENT */}
-              <div className="p-8">
-
-                <h3 className="text-4xl font-bold mb-5">
-                  {project.title}
-                </h3>
-
-                <p className="text-gray-400 text-lg leading-8 mb-8">
-                  {project.desc}
-                </p>
-
-                {/* TECH STACK */}
-                <div className="flex flex-wrap gap-3 mb-8">
-
-                  {project.tech.map((item, i) => (
-
-                    <span
-                      key={i}
-                      className="bg-yellow-400/10 text-yellow-400
-                      px-4 py-2 rounded-full text-sm border border-yellow-400/20"
-                    >
-                      {item}
-                    </span>
-
-                  ))}
-
-                </div>
-
-                {/* BUTTON */}
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-yellow-400 text-black
-                  px-8 py-4 rounded-2xl font-bold text-lg
-                  hover:bg-white hover:scale-105
-                  transition duration-300 shadow-xl shadow-yellow-400/30"
-                >
-                  View on Play Store
-                </a>
-
-              </div>
-
-            </div>
-
+              project={project}
+            />
           ))}
 
         </div>
@@ -125,5 +75,136 @@ export default function Projects() {
       </div>
 
     </section>
+  )
+}
+
+function ProjectCard({ project }: any) {
+
+  const [currentImage, setCurrentImage] = useState(0)
+
+  useEffect(() => {
+
+    const interval = setInterval(() => {
+
+      setCurrentImage((prev) =>
+        prev === project.images.length - 1 ? 0 : prev + 1
+      )
+
+    }, 2500)
+
+    return () => clearInterval(interval)
+
+  }, [project.images.length])
+
+  return (
+
+    <div
+      className="grid lg:grid-cols-2 gap-16 items-center
+      bg-[#111111] border border-gray-800 rounded-[40px]
+      p-8 lg:p-12 hover:border-yellow-400
+      transition duration-500 shadow-2xl shadow-black"
+    >
+
+      {/* LEFT SIDE */}
+      <div>
+
+        <p className="text-yellow-400 text-lg mb-3">
+          Mobile Application
+        </p>
+
+        <h3 className="text-5xl font-extrabold mb-5">
+          {project.title}
+        </h3>
+
+        <h4 className="text-2xl text-gray-300 mb-6">
+          {project.subtitle}
+        </h4>
+
+        <p className="text-gray-400 leading-8 text-lg mb-8">
+          {project.description}
+        </p>
+
+        {/* FEATURES */}
+        <div className="mb-8">
+
+          <h5 className="text-2xl font-bold mb-4 text-yellow-400">
+            Features
+          </h5>
+
+          <div className="space-y-3">
+
+            {project.features.map((feature: string, i: number) => (
+
+              <div
+                key={i}
+                className="flex items-center gap-3 text-gray-300"
+              >
+
+                <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+
+                <p>{feature}</p>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* TECHNOLOGIES */}
+        <div className="flex flex-wrap gap-3 mb-10">
+
+          {project.technologies.map((tech: string, i: number) => (
+
+            <span
+              key={i}
+              className="bg-yellow-400/10 text-yellow-400
+              px-4 py-2 rounded-full border border-yellow-400/20"
+            >
+              {tech}
+            </span>
+
+          ))}
+
+        </div>
+
+        {/* BUTTON */}
+        <a
+          href={project.playstore}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-yellow-400 text-black
+          px-8 py-4 rounded-2xl font-bold text-lg
+          hover:bg-white hover:scale-105
+          transition duration-300 shadow-xl shadow-yellow-400/30"
+        >
+          View on Play Store
+        </a>
+
+      </div>
+
+      {/* RIGHT SIDE */}
+      <div className="flex justify-center">
+
+        <div className="relative">
+
+          <div className="absolute inset-0 bg-yellow-400 blur-3xl opacity-20 rounded-full animate-pulse"></div>
+
+          <img
+            src={project.images[currentImage]}
+            alt={project.title}
+            className="relative w-[320px] lg:w-[360px]
+            rounded-[35px] border-4 border-yellow-400
+            shadow-2xl shadow-yellow-400/20
+            transition-all duration-700"
+          />
+
+        </div>
+
+      </div>
+
+    </div>
+
   )
 }
