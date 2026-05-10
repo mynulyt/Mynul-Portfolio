@@ -55,11 +55,8 @@ export default function Hero() {
         </div>
 
         <div className="flex justify-center">
-          <img
-            src="/profile.jpg"
-            alt="Mynul"
-            className="rounded-3xl border-4 border-yellow-400 w-[380px]"
-          />
+         <img
+  src="https://res.cloudinary.com/dfa4buz7j/image/upload/v1778451355/IMG_3715_dxejhc.jpg"
         </div>
       </div>
     </section>
