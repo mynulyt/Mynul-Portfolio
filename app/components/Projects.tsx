@@ -1,53 +1,54 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 
 export default function Projects() {
 
-  const projects = [
-    {
-      title: 'Poran Global',
+  const [projects, setProjects] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-      subtitle:
-        'Multi Vendor eCommerce Flutter Application',
+  useEffect(() => {
 
-      description:
-        'Poran Global is a modern multi-vendor eCommerce platform built with Flutter. The app provides seamless shopping experience with real-time product management, Firebase integration, secure authentication, scalable architecture, and responsive UI for Android & iOS users.',
+    fetchProjects()
 
-      features: [
-        'Multi Vendor System',
-        'Firebase Authentication',
-        'REST API Integration',
-        'Real-time Order Management',
-        'Clean Architecture',
-        'Responsive UI Design',
-        'Secure Payment System',
-      ],
+  }, [])
 
-      technologies: [
-        'Flutter',
-        'Firebase',
-        'REST API',
-        'GetX',
-        'Provider',
-      ],
+  const fetchProjects = async () => {
 
-      playstore:
-        'https://play.google.com/store/apps/details?id=com.poranglobalapp.app',
+    try {
 
-      images: [
-        'https://res.cloudinary.com/dfa4buz7j/image/upload/v1778454022/WhatsApp_Image_2026-05-11_at_4.58.47_AM_gdbvws.jpg',
+      const querySnapshot = await getDocs(
+        collection(db, 'projects')
+      )
 
-        'https://res.cloudinary.com/dfa4buz7j/image/upload/v1778454019/WhatsApp_Image_2026-05-11_at_4.58.48_AM_pcxvhu.jpg',
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
 
-        'https://res.cloudinary.com/dfa4buz7j/image/upload/v1778454015/WhatsApp_Image_2026-05-11_at_4.58.48_AM_1_cgamo2.jpg',
+      setProjects(data)
 
-        'https://res.cloudinary.com/dfa4buz7j/image/upload/v1778454014/WhatsApp_Image_2026-05-11_at_4.58.48_AM_2_qxo8rr.jpg',
+    } catch (error) {
 
-        'https://res.cloudinary.com/dfa4buz7j/image/upload/v1778454014/WhatsApp_Image_2026-05-11_at_4.58.49_AM_gsd8qf.jpg',
-      ],
-    },
-  ]
+      console.log(error)
+
+    } finally {
+
+      setLoading(false)
+
+    }
+
+  }
+
+  if (loading) {
+    return (
+      <div className="text-center py-32 text-yellow-400 text-2xl">
+        Loading Projects...
+      </div>
+    )
+  }
 
   return (
     <section
@@ -57,7 +58,7 @@ export default function Projects() {
 
       <div className="max-w-7xl mx-auto">
 
-        <h2 className="text-5xl font-extrabold text-center text-yellow-400 mb-20">
+        <h2 className="text-5xl font-extrabold text-center mb-20 text-yellow-400">
           Featured Projects
         </h2>
 
@@ -130,71 +131,148 @@ function ProjectCard({ project }: any) {
           {project.title}
         </h3>
 
-        <h4 className="text-2xl text-gray-300 mb-6">
-          {project.subtitle}
-        </h4>
+        {project.subtitle && (
 
-        <p className="text-gray-400 leading-8 text-lg mb-8">
-          {project.description}
-        </p>
+          <h4 className="text-2xl text-gray-300 mb-6">
+            {project.subtitle}
+          </h4>
+
+        )}
+
+        {project.description && (
+
+          <p className="text-gray-400 leading-8 text-lg mb-8">
+            {project.description}
+          </p>
+
+        )}
 
         {/* FEATURES */}
-        <div className="mb-8">
+        {project.features?.length > 0 && (
 
-          <h5 className="text-2xl font-bold mb-4 text-yellow-400">
-            Features
-          </h5>
+          <div className="mb-8">
 
-          <div className="space-y-3">
+            <h5 className="text-2xl font-bold mb-4 text-yellow-400">
+              Features
+            </h5>
 
-            {project.features.map((feature: string, i: number) => (
+            <div className="space-y-3">
 
-              <div
+              {project.features.map((feature: string, i: number) => (
+
+                <div
+                  key={i}
+                  className="flex items-center gap-3 text-gray-300"
+                >
+
+                  <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+
+                  <p>{feature}</p>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+        )}
+
+        {/* TECHNOLOGIES */}
+        {project.technologies?.length > 0 && (
+
+          <div className="flex flex-wrap gap-3 mb-8">
+
+            {project.technologies.map((item: string, i: number) => (
+
+              <span
                 key={i}
-                className="flex items-center gap-3 text-gray-300"
+                className="bg-yellow-400/10 text-yellow-400
+                px-4 py-2 rounded-full text-sm border border-yellow-400/20"
               >
-
-                <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
-
-                <p>{feature}</p>
-
-              </div>
+                {item}
+              </span>
 
             ))}
 
           </div>
 
-        </div>
+        )}
 
-        {/* TECHNOLOGIES */}
-        <div className="flex flex-wrap gap-3 mb-10">
+        {/* BUTTONS */}
+        <div className="flex flex-wrap gap-4">
 
-          {project.technologies.map((tech: string, i: number) => (
+          {/* PLAY STORE */}
+          {project.playstore && (
 
-            <span
-              key={i}
-              className="bg-yellow-400/10 text-yellow-400
-              px-4 py-2 rounded-full border border-yellow-400/20"
+            <a
+              href={project.playstore}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-yellow-400 text-black
+              px-8 py-4 rounded-2xl font-bold text-lg
+              hover:bg-white hover:scale-105
+              transition duration-300 shadow-xl shadow-yellow-400/30"
             >
-              {tech}
-            </span>
+              View Play Store
+            </a>
+
+          )}
+
+          {/* GITHUB */}
+          {project.github && (
+
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block border border-yellow-400
+              text-yellow-400 px-6 py-4 rounded-2xl
+              font-semibold hover:bg-yellow-400
+              hover:text-black transition duration-300"
+            >
+              GitHub
+            </a>
+
+          )}
+
+          {/* LIVE DEMO */}
+          {project.liveDemo && (
+
+            <a
+              href={project.liveDemo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block border border-yellow-400
+              text-yellow-400 px-6 py-4 rounded-2xl
+              font-semibold hover:bg-yellow-400
+              hover:text-black transition duration-300"
+            >
+              Live Demo
+            </a>
+
+          )}
+
+          {/* DYNAMIC DOWNLOAD BUTTONS */}
+          {project.downloads?.map((item: any, index: number) => (
+
+            <a
+              key={index}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block border border-yellow-400
+              text-yellow-400 px-6 py-4 rounded-2xl
+              font-semibold hover:bg-yellow-400
+              hover:text-black transition duration-300"
+            >
+              {item.title}
+            </a>
 
           ))}
 
         </div>
-
-        {/* BUTTON */}
-        <a
-          href={project.playstore}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-yellow-400 text-black
-          px-8 py-4 rounded-2xl font-bold text-lg
-          hover:bg-white hover:scale-105
-          transition duration-300 shadow-xl shadow-yellow-400/30"
-        >
-          View on Play Store
-        </a>
 
       </div>
 
@@ -203,7 +281,7 @@ function ProjectCard({ project }: any) {
 
         <div className="relative">
 
-          {/* Glow */}
+          {/* GLOW */}
           <div className="absolute inset-0 bg-yellow-400 blur-3xl opacity-20 rounded-full animate-pulse"></div>
 
           {/* IMAGE */}
@@ -220,11 +298,10 @@ function ProjectCard({ project }: any) {
           <button
             onClick={prevSlide}
             className="absolute top-1/2 -left-5 -translate-y-1/2
-            bg-black/70 backdrop-blur-md border border-yellow-400
+            bg-black/70 border border-yellow-400
             text-yellow-400 w-12 h-12 rounded-full
-            flex items-center justify-center
             hover:bg-yellow-400 hover:text-black
-            transition duration-300 shadow-lg"
+            transition duration-300"
           >
             ‹
           </button>
@@ -233,33 +310,13 @@ function ProjectCard({ project }: any) {
           <button
             onClick={nextSlide}
             className="absolute top-1/2 -right-5 -translate-y-1/2
-            bg-black/70 backdrop-blur-md border border-yellow-400
+            bg-black/70 border border-yellow-400
             text-yellow-400 w-12 h-12 rounded-full
-            flex items-center justify-center
             hover:bg-yellow-400 hover:text-black
-            transition duration-300 shadow-lg"
+            transition duration-300"
           >
             ›
           </button>
-
-          {/* DOT INDICATORS */}
-          <div className="flex justify-center gap-3 mt-6">
-
-            {project.images.map((_: any, index: number) => (
-
-              <div
-                key={index}
-                onClick={() => setCurrentImage(index)}
-                className={`w-3 h-3 rounded-full cursor-pointer transition duration-300 ${
-                  currentImage === index
-                    ? 'bg-yellow-400 scale-125'
-                    : 'bg-gray-600'
-                }`}
-              />
-
-            ))}
-
-          </div>
 
         </div>
 
