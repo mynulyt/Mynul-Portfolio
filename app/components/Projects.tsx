@@ -86,15 +86,29 @@ function ProjectCard({ project }: any) {
 
     const interval = setInterval(() => {
 
-      setCurrentImage((prev) =>
-        prev === project.images.length - 1 ? 0 : prev + 1
-      )
+      nextSlide()
 
-    }, 2500)
+    }, 3000)
 
     return () => clearInterval(interval)
 
-  }, [project.images.length])
+  }, [currentImage])
+
+  const nextSlide = () => {
+
+    setCurrentImage((prev: number) =>
+      prev === project.images.length - 1 ? 0 : prev + 1
+    )
+
+  }
+
+  const prevSlide = () => {
+
+    setCurrentImage((prev: number) =>
+      prev === 0 ? project.images.length - 1 : prev - 1
+    )
+
+  }
 
   return (
 
@@ -189,8 +203,10 @@ function ProjectCard({ project }: any) {
 
         <div className="relative">
 
+          {/* Glow */}
           <div className="absolute inset-0 bg-yellow-400 blur-3xl opacity-20 rounded-full animate-pulse"></div>
 
+          {/* IMAGE */}
           <img
             src={project.images[currentImage]}
             alt={project.title}
@@ -199,6 +215,51 @@ function ProjectCard({ project }: any) {
             shadow-2xl shadow-yellow-400/20
             transition-all duration-700"
           />
+
+          {/* LEFT BUTTON */}
+          <button
+            onClick={prevSlide}
+            className="absolute top-1/2 -left-5 -translate-y-1/2
+            bg-black/70 backdrop-blur-md border border-yellow-400
+            text-yellow-400 w-12 h-12 rounded-full
+            flex items-center justify-center
+            hover:bg-yellow-400 hover:text-black
+            transition duration-300 shadow-lg"
+          >
+            ‹
+          </button>
+
+          {/* RIGHT BUTTON */}
+          <button
+            onClick={nextSlide}
+            className="absolute top-1/2 -right-5 -translate-y-1/2
+            bg-black/70 backdrop-blur-md border border-yellow-400
+            text-yellow-400 w-12 h-12 rounded-full
+            flex items-center justify-center
+            hover:bg-yellow-400 hover:text-black
+            transition duration-300 shadow-lg"
+          >
+            ›
+          </button>
+
+          {/* DOT INDICATORS */}
+          <div className="flex justify-center gap-3 mt-6">
+
+            {project.images.map((_: any, index: number) => (
+
+              <div
+                key={index}
+                onClick={() => setCurrentImage(index)}
+                className={`w-3 h-3 rounded-full cursor-pointer transition duration-300 ${
+                  currentImage === index
+                    ? 'bg-yellow-400 scale-125'
+                    : 'bg-gray-600'
+                }`}
+              />
+
+            ))}
+
+          </div>
 
         </div>
 
