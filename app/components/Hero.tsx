@@ -43,15 +43,16 @@ export default function Hero() {
             </a>
           </div>
 
-          <div className="mt-8">
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              className="bg-yellow-400 text-black px-6 py-3 rounded-xl font-semibold"
-            >
-              Download Resume
-            </a>
-          </div>
+         <div className="mt-8">
+  <a
+    href="https://res.cloudinary.com/dfa4buz7j/image/upload/Mynul_Resume_jpmsyp.pdf"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-yellow-400 text-black px-6 py-3 rounded-xl font-semibold hover:scale-105 transition duration-300"
+  >
+    Download Resume
+  </a>
+</div>
         </div>
 
         <div className="flex justify-center">
